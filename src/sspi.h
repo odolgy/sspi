@@ -72,7 +72,11 @@ struct sspi
     int word_size;
 };
 
-/* Set SCK and MOSI pins to default state */
+/* Set SCK and MOSI pins to default state.
+ * Optionally you may use it: 
+ * - after GPIO initialization to make sure the SCK level matches the CPOL setting;
+ * - after write operations to make sure the MOSI level has been returned to 0. 
+ * */
 static inline void sspi_reset(struct sspi const *bus)
 {
     bus->write_sck(bus, bus->cpol_1 ? SSPI_PIN_HIGH : SSPI_PIN_LOW);
