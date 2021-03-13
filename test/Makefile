@@ -26,7 +26,7 @@ DEBUG = -g3
 # Optimization flags
 OPT = -O0
 # Extra C flags
-CFLAGS_EXTRA = -Wall
+CFLAGS_EXTRA = -Wall -std=c11
 # Linker flags
 LDFLAGS = 
 # Executables prefix

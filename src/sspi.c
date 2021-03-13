@@ -35,7 +35,8 @@ uint8_t sspi_byte_read_write(struct sspi const *bus, uint8_t write_byte)
 
     for (int bit = 0; bit < word_size; bit++)
     {
-        read_byte |= sspi_bit_read_write(bus, write_byte & mask_tx) ? mask_rx : 0x00;
+        sspi_pin_state_t const write_bit = (write_byte & mask_tx) ? SSPI_PIN_HIGH : SSPI_PIN_LOW;
+        read_byte |= (sspi_bit_read_write(bus, write_bit) == SSPI_PIN_HIGH) ? mask_rx : 0x00;
 
         if (bit < word_size - 1)
         {

@@ -84,11 +84,11 @@ static inline void sspi_reset(struct sspi const *bus)
 }
 
 /* Read and write one bit */
-static inline bool sspi_bit_read_write(struct sspi const *bus, bool write_high_bit)
+static inline sspi_pin_state_t sspi_bit_read_write(struct sspi const *bus, sspi_pin_state_t write_bit)
 {
     sspi_pin_state_t const sck_lead = bus->cpol_1 ? SSPI_PIN_LOW : SSPI_PIN_HIGH;
     sspi_pin_state_t const sck_trail = bus->cpol_1 ? SSPI_PIN_HIGH : SSPI_PIN_LOW;
-    bool read_high_bit;
+    sspi_pin_state_t read_bit;
 
     if (bus->cpha_1)
     {
@@ -96,29 +96,29 @@ static inline bool sspi_bit_read_write(struct sspi const *bus, bool write_high_b
 
         /* Write bit on the leading edge */
         bus->write_sck(bus, sck_lead);
-        bus->write_mosi(bus, write_high_bit ? SSPI_PIN_HIGH : SSPI_PIN_LOW);
+        bus->write_mosi(bus, write_bit);
         bus->delay(bus);
 
         /* Read bit on the trailing edge */
         bus->write_sck(bus, sck_trail);
-        read_high_bit = (bus->read_miso(bus) == SSPI_PIN_HIGH);
+        read_bit = bus->read_miso(bus);
     }
     else
     {
         /* Write bit */
-        bus->write_mosi(bus, write_high_bit ? SSPI_PIN_HIGH : SSPI_PIN_LOW);
+        bus->write_mosi(bus, write_bit);
         bus->delay(bus);
 
         /* Read bit on the leading edge */
         bus->write_sck(bus, sck_lead);
-        read_high_bit = (bus->read_miso(bus) == SSPI_PIN_HIGH);
+        read_bit = bus->read_miso(bus);
         bus->delay(bus);
 
         /* Trailing edge */
         bus->write_sck(bus, sck_trail);
     }
 
-    return read_high_bit;
+    return read_bit;
 }
 
 /* Read and write one byte */
